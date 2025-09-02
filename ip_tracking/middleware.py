@@ -1,5 +1,6 @@
 from django.utils.timezone import now
-from .models import RequestLog
+from django.http import HttpResponseForbidden
+from .models import RequestLog, BlockedIP
 
 class IPTrackingMiddleware:
     def __init__(self, get_response):
@@ -8,6 +9,11 @@ class IPTrackingMiddleware:
     def __call__(self, request):
         ip_address = self.get_client_ip(request)
 
+        # 🔒 Block if IP is blacklisted
+        if BlockedIP.objects.filter(ip_address=ip_address).exists():
+            return HttpResponseForbidden("Your IP has been blocked.")
+
+        # Log request if not blocked
         RequestLog.objects.create(
             ip_address=ip_address,
             timestamp=now(),
