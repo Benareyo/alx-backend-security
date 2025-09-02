@@ -126,3 +126,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # config/settings.py
 RATELIMIT_ENABLE = True
 
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # if using Redis
+CELERY_BEAT_SCHEDULE = {
+    'flag_suspicious_ips_hourly': {
+        'task': 'ip_tracking.tasks.flag_suspicious_ips',
+        'schedule': 3600.0,  # every hour
+    },
+}
+
