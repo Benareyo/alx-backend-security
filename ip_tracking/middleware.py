@@ -1,3 +1,4 @@
+
 from django.http import HttpResponseForbidden
 from .models import RequestLog, BlockedIP
 import ipapi
